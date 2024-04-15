@@ -1,6 +1,7 @@
 ﻿using FlexPrint_Console.DB;
 using FlexPrint_Console.Enum;
 using FlexPrint_Console.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,8 @@ namespace FlexPrint_Console.Manager
 				}
 			}
 		}
+
+
 		public void AddPrinter<T>(T printer) where T : Printer
 		{
 			try
@@ -90,7 +93,7 @@ namespace FlexPrint_Console.Manager
 			}
 		}
 
-		public string GenerateProductCode()
+		private string GenerateProductCode()
 		{
 			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 			Random random = new Random();
@@ -120,13 +123,13 @@ namespace FlexPrint_Console.Manager
 							var existingLaserPrinter = context.LaserPrinters.FirstOrDefault(p => p.ProductCode == productCode);
 							if (existingLaserPrinter != null)
 							{
-								
 								existingLaserPrinter.Model = newPrinterData.Model;
 								existingLaserPrinter.Manufacturer = newPrinterData.Manufacturer;
 								existingLaserPrinter.Price = newPrinterData.Price;
 								existingLaserPrinter.Purpose = newPrinterData.Purpose;
 								existingLaserPrinter.PrinterSize = newPrinterData.PrinterSize;
-							
+								existingLaserPrinter.LaserType = ((LaserPrinter)(object)newPrinterData).LaserType; // Оновлення поля LaserType
+
 								context.SaveChanges();
 							}
 						}
@@ -137,15 +140,15 @@ namespace FlexPrint_Console.Manager
 						if (index != -1)
 						{
 							inkjetPrintersList[index] = (InkjetPrinter)(object)newPrinterData;
-							var existingLaserPrinter = context.LaserPrinters.FirstOrDefault(p => p.ProductCode == productCode);
-							if (existingLaserPrinter != null)
+							var existingInkjetPrinter = context.InkjetPrinters.FirstOrDefault(p => p.ProductCode == productCode);
+							if (existingInkjetPrinter != null)
 							{
-								existingLaserPrinter.Model = newPrinterData.Model;
-								existingLaserPrinter.Manufacturer = newPrinterData.Manufacturer;
-								existingLaserPrinter.Price = newPrinterData.Price;
-								existingLaserPrinter.Purpose = newPrinterData.Purpose;
-								existingLaserPrinter.PrinterSize = newPrinterData.PrinterSize;
-
+								existingInkjetPrinter.Model = newPrinterData.Model;
+								existingInkjetPrinter.Manufacturer = newPrinterData.Manufacturer;
+								existingInkjetPrinter.Price = newPrinterData.Price;
+								existingInkjetPrinter.Purpose = newPrinterData.Purpose;
+								existingInkjetPrinter.PrinterSize = newPrinterData.PrinterSize;
+								existingInkjetPrinter.Duplex = ((InkjetPrinter)(object)newPrinterData).Duplex;
 								context.SaveChanges();
 							}
 						}

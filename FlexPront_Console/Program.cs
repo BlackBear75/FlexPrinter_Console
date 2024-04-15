@@ -27,18 +27,11 @@ namespace FlexPrint_Console
 
 			IPrinterManager printerManager = new PrinterManager(configuration);
 
-			LaserPrinter l1 = new LaserPrinter()
-			{
-				LaserType = LaserPrinterType.Gas,
-				PrinterSize = MaxPrinterSize.A4,
-				Manufacturer = "HP",
-				Model = "ui53",
-				Price = 16000,
-				Purpose = PrinterPurpose.Home,
-			};
-			printerManager.EditPrinter("M0QBPZ", l1);
+
 
 
 		}
+
+	
 	}
 }
