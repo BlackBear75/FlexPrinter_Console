@@ -17,21 +17,38 @@ namespace FlexPrint_Console
 		{
 
 			var configuration = new ConfigurationBuilder()
-		.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-		.AddJsonFile("appsettings.json")
-		.Build();
+			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+			.AddJsonFile("appsettings.json")
+			.Build();
 
-			var dbContext = new PrinterDbContext(configuration);
-			dbContext.Database.EnsureCreated();
-
+			EnsureDatabaseCreated(configuration);
 
 			IPrinterManager printerManager = new PrinterManager(configuration);
+
+			
 
 
 
 
 		}
+		static void PrintPrinter_Console(List<Printer> printers)
+		{
+            foreach (var item in printers)
+            {
+                Console.WriteLine(item);
+            }
 
-	
+        }
+		static void EnsureDatabaseCreated(IConfiguration configuration)
+		{
+			using (var dbContext = new PrinterDbContext(configuration))
+			{
+				if (!dbContext.Database.CanConnect())
+				{
+					dbContext.Database.EnsureCreated();
+				}
+			}
+		}
+
 	}
 }

@@ -192,49 +192,75 @@ namespace FlexPrint_Console.Manager
 
 		}
 
-		public void SortPrintersByPrice()
+		public List<Printer> SortPrintersByPrice(List<Printer> allPrinters)
 		{
-
-			List<Printer> allPrinters = new List<Printer>();
-			allPrinters.AddRange(laserPrintersList);
-			allPrinters.AddRange(inkjetPrintersList);
-
-			allPrinters.Sort((x, y) => x.Price.CompareTo(y.Price));
+			var sortedPrinters = new List<Printer>(allPrinters.OrderBy(p => p.Price));
 
 			Console.WriteLine("Printers sorted by price:");
-			foreach (var printer in allPrinters)
+			foreach (var printer in sortedPrinters)
 			{
 				Console.WriteLine($"Model: {printer.Model}, Price: {printer.Price}");
 			}
+			return sortedPrinters;
 		}
 
-		public List<LaserPrinter> GetLaserPrinters()
+		public List<Printer> GetLaserPrinters(List<Printer> allPrinters)
 		{
-			return laserPrintersList;
+			var laserPrinters = new List<Printer>();
+
+			foreach (var printer in allPrinters)
+			{
+				if (printer is LaserPrinter)
+				{
+					laserPrinters.Add(printer);
+				}
+			}
+			return laserPrinters;
 		}
 
-		public List<InkjetPrinter> GetInkjetPrinters()
+		public List<Printer> GetInkjetPrinters(List<Printer> allPrinters)
 		{
-			return inkjetPrintersList;
+			var inkjetPrinters = new List<Printer>();
+
+			foreach (var printer in allPrinters)
+			{
+				if (printer is InkjetPrinter)
+				{
+					inkjetPrinters.Add(printer);
+				}
+			}
+			return inkjetPrinters;
 		}
 
-		public List<Printer> GetPrintersByManufacturer(string manufacturer)
+		public List<Printer> GetPrintersByManufacturer(string manufacturer, List<Printer> allPrinters)
 		{
 			var printersByManufacturer = new List<Printer>();
-			printersByManufacturer.AddRange(laserPrintersList.Where(p => p.Manufacturer == manufacturer));
-			printersByManufacturer.AddRange(inkjetPrintersList.Where(p => p.Manufacturer == manufacturer));
-			if(printersByManufacturer.Count==0)
+
+			foreach (var printer in allPrinters)
+			{
+				if (printer.Manufacturer == manufacturer)
+				{
+					printersByManufacturer.Add(printer);
+				}
+			}
+			if (printersByManufacturer.Count==0)
 			{
 				Console.WriteLine("No printers with this manufacturer were found") ;
 			}
 			return printersByManufacturer;
 		}
 
-		public List<Printer> GetHomePrinters()
+		public List<Printer> GetHomePrinters(List<Printer> allPrinters)
 		{
 			var homePrinters = new List<Printer>();
-			homePrinters.AddRange(inkjetPrintersList.Where(p => p.Purpose == PrinterPurpose.Home));
-			homePrinters.AddRange(laserPrintersList.Where(p => p.Purpose == PrinterPurpose.Home));
+
+			foreach (var printer in allPrinters)
+			{
+				if (printer.Purpose == PrinterPurpose.Home)
+				{
+					homePrinters.Add(printer);
+				}
+			}
 			if (homePrinters.Count == 0)
 			{
 				Console.WriteLine("No home printers found");
@@ -242,20 +268,40 @@ namespace FlexPrint_Console.Manager
 			return homePrinters;
 		}
 
-		public List<Printer> GetOfficePrinters()
+		public List<Printer> GetOfficePrinters(List<Printer> allPrinters)
 		{
 			var officePrinters = new List<Printer>();
-			officePrinters.AddRange(inkjetPrintersList.Where(p => p.Purpose == PrinterPurpose.Office));
-			officePrinters.AddRange(laserPrintersList.Where(p => p.Purpose == PrinterPurpose.Office));
-			if (officePrinters.Count == 0)
+
+			foreach (var printer in allPrinters)
+			{
+				if (printer.Purpose == PrinterPurpose.Office)
+				{
+					officePrinters.Add(printer);
+				}
+			}
 			{
 				Console.WriteLine("No office printers found");
 			}
 	
 			return officePrinters;
 		}
-		
-	
+
+		public List<Printer> GetPrinters()
+		{
+			var printers = new List<Printer>();
+			foreach (var printer in inkjetPrintersList)
+			{
+
+				printers.Add(printer);
+
+			}
+			foreach (var printer in laserPrintersList)
+			{
+				printers.Add(printer);
+			}
+
+			return printers;
+		}
 	}
 
 		

@@ -15,7 +15,10 @@ namespace FlexPrint_Console.Model
 		public MaxPrinterSize PrinterSize { get; set; }
 		public decimal Price { get; set; }
 
-
+		/// <summary>
+		/// Метод обчисляє ціну принтера і можливі бонуси
+		/// </summary>
+		/// <returns></returns>
 		public virtual decimal CalculatePurchaseCost()
 		{
 			return Price;

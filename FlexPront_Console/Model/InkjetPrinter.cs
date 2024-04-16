@@ -21,7 +21,7 @@ namespace FlexPrint_Console.Model
 		public override string ToString()
 		{
 			return $"InkjetPrinter Printer:\n Manufacturer: {Manufacturer}\n Model: " +
-				$" {Model}\n Product Code: {ProductCode}\n Price: {Price}\nPurpose:{Purpose}\n " +
+				$" {Model}\n Product Code: {ProductCode}\n Price: {Price}\n Purpose:{Purpose}\n " +
 				$"PrinterSize: {PrinterSize}\n Duplex: {Duplex}\n";
 		}
 	}
