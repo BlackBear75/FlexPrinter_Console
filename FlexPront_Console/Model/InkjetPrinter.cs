@@ -14,14 +14,14 @@ namespace FlexPrint_Console.Model
 		{
 			
 			Console.WriteLine("Congratulations, you have received a cartridge as a gift!\n" +
-				$"{Price}$ due");
+				$"{Price} UAH due");
 			return base.CalculatePurchaseCost();
 		}
 
 		public override string ToString()
 		{
 			return $"InkjetPrinter Printer:\n Manufacturer: {Manufacturer}\n Model: " +
-				$" {Model}\n Product Code: {ProductCode}\n Price: {Price}\n Purpose:{Purpose}\n " +
+				$" {Model}\n Product Code: {ProductCode}\n Price: {Price} UAH\n Purpose:{Purpose}\n " +
 				$"PrinterSize: {PrinterSize}\n Duplex: {Duplex}\n";
 		}
 	}

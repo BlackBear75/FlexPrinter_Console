@@ -20,7 +20,7 @@ namespace FlexPrint_Console.Model
 				
 				discountedPrice *= 0.95m;
                 Console.WriteLine("After buying a laser printer from 5000 5% discount\n" +
-					$"{discountedPrice}$ due");
+					$"{discountedPrice} UAH due");
 				
             }
 			
@@ -29,7 +29,7 @@ namespace FlexPrint_Console.Model
 		public override string ToString()
 		{
 			return $"Laser Printer:\n Manufacturer: {Manufacturer}\n Model: " +
-				$" {Model}\n Product Code: {ProductCode}\n Price: {Price}$\n Purpose:{Purpose}\n " +
+				$" {Model}\n Product Code: {ProductCode}\n Price: {Price} UAH\n Purpose:{Purpose}\n " +
 				$"PrinterSize: {PrinterSize}\n LaserType: {LaserType}\n";
 		}
 	}

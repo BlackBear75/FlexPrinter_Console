@@ -114,24 +114,15 @@ namespace FlexPrint_Console.Manager
 			{
 				using (var context = new PrinterDbContext(_configuration))
 				{
+					Printer printerToUpdate = null;
+
 					if (newPrinterData is LaserPrinter)
 					{
 						var index = laserPrintersList.FindIndex(p => p.ProductCode == productCode);
 						if (index != -1)
 						{
 							laserPrintersList[index] = (LaserPrinter)(object)newPrinterData;
-							var existingLaserPrinter = context.LaserPrinters.FirstOrDefault(p => p.ProductCode == productCode);
-							if (existingLaserPrinter != null)
-							{
-								existingLaserPrinter.Model = newPrinterData.Model;
-								existingLaserPrinter.Manufacturer = newPrinterData.Manufacturer;
-								existingLaserPrinter.Price = newPrinterData.Price;
-								existingLaserPrinter.Purpose = newPrinterData.Purpose;
-								existingLaserPrinter.PrinterSize = newPrinterData.PrinterSize;
-								existingLaserPrinter.LaserType = ((LaserPrinter)(object)newPrinterData).LaserType; // Оновлення поля LaserType
-
-								context.SaveChanges();
-							}
+							printerToUpdate = laserPrintersList[index];
 						}
 					}
 					else if (newPrinterData is InkjetPrinter)
@@ -140,17 +131,32 @@ namespace FlexPrint_Console.Manager
 						if (index != -1)
 						{
 							inkjetPrintersList[index] = (InkjetPrinter)(object)newPrinterData;
-							var existingInkjetPrinter = context.InkjetPrinters.FirstOrDefault(p => p.ProductCode == productCode);
-							if (existingInkjetPrinter != null)
+							printerToUpdate = inkjetPrintersList[index];
+						}
+					}
+
+					if (printerToUpdate != null)
+					{
+						var existingPrinter = context.Printers.FirstOrDefault(p => p.ProductCode == productCode);
+						if (existingPrinter != null)
+						{
+							existingPrinter.Model = printerToUpdate.Model;
+							existingPrinter.Manufacturer = printerToUpdate.Manufacturer;
+							existingPrinter.Price = printerToUpdate.Price;
+							existingPrinter.Purpose = printerToUpdate.Purpose;
+							existingPrinter.PrinterSize = printerToUpdate.PrinterSize;
+
+							// Check the type of printer and update specific properties accordingly
+							if (printerToUpdate is LaserPrinter)
 							{
-								existingInkjetPrinter.Model = newPrinterData.Model;
-								existingInkjetPrinter.Manufacturer = newPrinterData.Manufacturer;
-								existingInkjetPrinter.Price = newPrinterData.Price;
-								existingInkjetPrinter.Purpose = newPrinterData.Purpose;
-								existingInkjetPrinter.PrinterSize = newPrinterData.PrinterSize;
-								existingInkjetPrinter.Duplex = ((InkjetPrinter)(object)newPrinterData).Duplex;
-								context.SaveChanges();
+								((LaserPrinter)printerToUpdate).LaserType = ((LaserPrinter)(object)newPrinterData).LaserType;
 							}
+							else if (printerToUpdate is InkjetPrinter)
+							{
+								((InkjetPrinter)printerToUpdate).Duplex = ((InkjetPrinter)(object)newPrinterData).Duplex;
+							}
+
+							context.SaveChanges();
 						}
 					}
 				}
@@ -187,13 +193,18 @@ namespace FlexPrint_Console.Manager
 			}
 			else
 			{
-				Console.WriteLine("A printer with the same code was not found");
+				Console.WriteLine("Remove : A printer with the same code was not found");
 			}
 
 		}
 
 		public List<Printer> SortPrintersByPrice(List<Printer> allPrinters)
 		{
+			if(allPrinters.Count==0)
+			{
+                Console.WriteLine("You can't sort emptiness");
+                return allPrinters;
+			}
 			var sortedPrinters = new List<Printer>(allPrinters.OrderBy(p => p.Price));
 
 			Console.WriteLine("Printers sorted by price:");
@@ -215,6 +226,10 @@ namespace FlexPrint_Console.Manager
 					laserPrinters.Add(printer);
 				}
 			}
+			if(laserPrinters.Count==0)
+			{
+                Console.WriteLine("Laser printers not found");
+            }
 			return laserPrinters;
 		}
 
@@ -229,14 +244,19 @@ namespace FlexPrint_Console.Manager
 					inkjetPrinters.Add(printer);
 				}
 			}
+			if (inkjetPrinters.Count == 0)
+			{
+				Console.WriteLine("Inkjet printers not found");
+			}
 			return inkjetPrinters;
 		}
 
 		public List<Printer> GetPrintersByManufacturer(string manufacturer, List<Printer> allPrinters)
 		{
 			var printersByManufacturer = new List<Printer>();
+          
 
-			foreach (var printer in allPrinters)
+            foreach (var printer in allPrinters)
 			{
 				if (printer.Manufacturer == manufacturer)
 				{
@@ -247,6 +267,10 @@ namespace FlexPrint_Console.Manager
 			{
 				Console.WriteLine("No printers with this manufacturer were found") ;
 			}
+			else
+			{
+				Console.WriteLine($"List of printers with manufacturer {manufacturer}:") ;
+            }
 			return printersByManufacturer;
 		}
 
@@ -279,6 +303,7 @@ namespace FlexPrint_Console.Manager
 					officePrinters.Add(printer);
 				}
 			}
+			if(officePrinters.Count==0)
 			{
 				Console.WriteLine("No office printers found");
 			}
@@ -299,6 +324,10 @@ namespace FlexPrint_Console.Manager
 			{
 				printers.Add(printer);
 			}
+			if(printers.Count==0)
+			{
+                Console.WriteLine("Printers not found ");
+            }
 
 			return printers;
 		}
